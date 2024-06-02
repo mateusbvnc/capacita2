@@ -1,0 +1,81 @@
+#include <Servo.h>
+
+Servo servoE;
+Servo servoD;
+
+void MoverMotorEsquerdoFrente(int velocidade) {
+  digitalWrite(13, HIGH);
+  digitalWrite(5, LOW);
+  analogWrite(12, velocidade);
+}
+
+void MoverMotorEsquerdoTras(int velocidade) {
+  digitalWrite(13, LOW);
+  digitalWrite(5, HIGH);
+  analogWrite(12, velocidade);
+}
+
+void setup() {
+  Serial.begin(9600);
+  
+  pinMode(13, OUTPUT);
+  pinMode(5, OUTPUT);
+  pinMode(12, OUTPUT);
+  
+  pinMode(8, INPUT);
+  pinMode(9, INPUT);
+  pinMode(10, INPUT);
+  pinMode(11, INPUT);
+  
+  digitalWrite(13, LOW);
+  digitalWrite(5, LOW);
+  
+  servoE.attach(7);
+  servoD.attach(6);
+  
+  servoE.write(0);
+  servoD.write(0);
+}
+
+void loop() {
+ 
+  digitalWrite(1, LOW);
+  delayMicroseconds(2);
+  digitalWrite(1, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(1, LOW);
+
+  unsigned long tempo1 = pulseIn(8, HIGH);
+  unsigned long tempo2 = pulseIn(9, HIGH);
+  unsigned long tempo3 = pulseIn(10, HIGH);
+  unsigned long tempo4 = pulseIn(11, HIGH);
+
+  unsigned short distancia1 = tempo1 * 0.034 / 2;
+  unsigned short distancia2 = tempo2 * 0.034 / 2;
+  unsigned short distancia3 = tempo3 * 0.034 / 2;
+  unsigned short distancia4 = tempo4 * 0.034 / 2;
+  
+  Serial.print("Distancia1: ");
+  Serial.print(distancia1);
+  Serial.print(" cm, Distancia2: ");
+  Serial.print(distancia2);
+  Serial.print(" cm, Distancia3: ");
+  Serial.print(distancia3);
+  Serial.print(" cm, Distancia4: ");
+  Serial.print(distancia4);
+  Serial.println(" cm");
+  
+  if (distancia1 > 50 || distancia2 > 50) {
+    MoverMotorEsquerdoFrente(90);
+  } else {
+    digitalWrite(13, LOW);
+    digitalWrite(5, LOW);
+    analogWrite(12, 0);
+  }
+  
+  delay(100);
+}
+
+
+    
+    
