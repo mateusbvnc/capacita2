@@ -1,0 +1,140 @@
+/***************************************************************************************************
+/ Universidade Federal do Rio de Janeiro
+/ PAME 24.1
+/ Candidato : Mateus Barbosa Vila Nova Camara
+/ 
+/ PROJETO DE AR-CONDICIONADO
+/ CODIGO DO ARDUINO SLAVE
+/***************************************************************************************************/
+
+
+#include <Wire.h>
+#include <Servo.h>
+
+#define DIREITA							  1
+#define ESQUERDA						  2
+#define FRENTE							  3
+#define TRAS							    4
+
+#define MOTOR_DIREITA_E1      0
+#define MOTOR_DIREITA_E2      8
+#define MOTOR_DIREITA_A       2
+
+#define MOTOR_ESQUERDA_E1     1
+#define MOTOR_ESQUERDA_E2     9
+#define MOTOR_ESQUERDA_A      3
+
+#define SERVO_DIREITA         4
+#define SERVO_ESQUERDA        10
+
+Servo servoDireita;
+Servo servoEsquerda;
+
+void setup()
+{ 
+  Wire.begin();
+  Serial.begin(9600);
+  
+  pinMode(MOTOR_DIREITA_E1,OUTPUT);
+  pinMode(MOTOR_DIREITA_E2,OUTPUT);
+  pinMode(MOTOR_DIREITA_A,OUTPUT);
+  pinMode(MOTOR_ESQUERDA_E1,OUTPUT);
+  pinMode(MOTOR_ESQUERDA_E2,OUTPUT);
+  pinMode(MOTOR_ESQUERDA_A,OUTPUT);
+
+  servoDireita.attach(SERVO_DIREITA);
+  servoEsquerda.attach(SERVO_ESQUERDA);
+  
+  /*Motores inicialmente desligados e servos alinhados*/
+
+  digitalWrite(MOTOR_DIREITA_E1,LOW);
+  digitalWrite(MOTOR_DIREITA_E2,LOW);
+  digitalWrite(MOTOR_ESQUERDA_E1,LOW);
+  digitalWrite(MOTOR_ESQUERDA_E2,LOW);
+
+  analogWrite(MOTOR_DIREITA_A,0);
+  analogWrite(MOTOR_ESQUERDA_A,0);
+
+  servoDireita.Write(90);
+  servoEsquerda.Write(90);
+}
+
+void loop()
+{
+ if(Wire.available()) /*Se o Master der algum comando*/
+ {
+    unsigned short movimento = Wire.read();
+
+    if(movimento = FRENTE)
+    {
+      /*Mantem os servos alinhados e anda*/
+      servoDireita.Write(90);
+      servoEsquerda.Write(90);
+
+      pinMode(MOTOR_DIREITA_E1,HIGH);
+      pinMode(MOTOR_DIREITA_E2,LOW);
+      analogWrite(MOTOR_DIREITA_A,100);
+
+      pinMode(MOTOR_ESQUERDA_E1,HIGH);
+      pinMode(MOTOR_ESQUERDA_E2,LOW);
+      analogWrite(MOTOR_ESQUERDA_A,100);
+    }
+
+    else if(movimento = DIREITA)
+    {
+      /*Gira os servos para a direita, anda girando 90 graus, para e realinha os servos*/
+
+      servoDireita.Write(45);
+      servoEsquerda.Write(45);
+
+      pinMode(MOTOR_DIREITA_E1,HIGH);
+      pinMode(MOTOR_DIREITA_E2,LOW);
+      analogWrite(MOTOR_DIREITA_A,100);
+
+      pinMode(MOTOR_ESQUERDA_E1,HIGH);
+      pinMode(MOTOR_ESQUERDA_E2,LOW);
+      analogWrite(MOTOR_ESQUERDA_A,100);
+
+      delay(1000);
+      
+      pinMode(MOTOR_DIREITA_E1,LOW);
+      pinMode(MOTOR_DIREITA_E2,LOW);
+      analogWrite(MOTOR_DIREITA_A,0);
+
+      pinMode(MOTOR_ESQUERDA_E1,LOW);
+      pinMode(MOTOR_ESQUERDA_E2,LOW);
+      analogWrite(MOTOR_ESQUERDA_A,100);
+
+      servoDireita.Write(90);
+      servoEsquerda.Write(90);          
+    }
+
+    else if(movimento = ESQUERDA)
+    {
+      /*Gira os servos para a esquerda, anda girando 90 graus, para e realinha os servos*/
+      servoDireita.Write(135);
+      servoEsquerda.Write(135);
+
+      pinMode(MOTOR_DIREITA_E1,HIGH);
+      pinMode(MOTOR_DIREITA_E2,LOW);
+      analogWrite(MOTOR_DIREITA_A,100);
+
+      pinMode(MOTOR_ESQUERDA_E1,HIGH);
+      pinMode(MOTOR_ESQUERDA_E2,LOW);
+      analogWrite(MOTOR_ESQUERDA_A,100);
+
+      delay(1000);
+      
+      pinMode(MOTOR_DIREITA_E1,LOW);
+      pinMode(MOTOR_DIREITA_E2,LOW);
+      analogWrite(MOTOR_DIREITA_A,0);
+
+      pinMode(MOTOR_ESQUERDA_E1,LOW);
+      pinMode(MOTOR_ESQUERDA_E2,LOW);
+      analogWrite(MOTOR_ESQUERDA_A,100);
+
+      servoDireita.Write(90);
+      servoEsquerda.Write(90);
+    }
+ } 
+}
